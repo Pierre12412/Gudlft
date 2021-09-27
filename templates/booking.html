@@ -10,7 +10,11 @@
     <form action="/purchasePlaces" method="post">
         <input type="hidden" name="club" value="{{club['name']}}">
         <input type="hidden" name="competition" value="{{competition['name']}}">
+        {% if 12-competition['max'] < club['points'] %}
+        <label for="places">How many places?</label><input type="number" name="places" id="" value="1" min="1" max="{{12-competition['max']}}" required/>
+        {% else %}
         <label for="places">How many places?</label><input type="number" name="places" id="" value="1" min="1" max="{{club['points']}}" required/>
+        {% endif %}
         <button type="submit">Book</button>
     </form>
 </body>

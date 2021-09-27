@@ -13,12 +13,22 @@ def loadCompetitions():
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
 
-
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+
+
+# Max points for each competition is 12
+def loadPoints():
+    max_points_club = {}
+    for competition in competitions:
+        max_points_club[competition['name']] = 0
+    return max_points_club
+
+max_points_club = loadPoints()
+
 
 @app.route('/')
 def index(error=None):
@@ -38,7 +48,13 @@ def showSummary():
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
+
     if foundClub and foundCompetition:
+        foundClub['points'] = int(foundClub['points'])
+        try:
+            foundCompetition['max']
+        except:
+            foundCompetition['max'] = 0
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
@@ -50,8 +66,10 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+
+    max_points_club[competition['name']] += placesRequired
+    competition['max'] += placesRequired
     club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
