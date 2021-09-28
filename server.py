@@ -20,16 +20,6 @@ competitions = loadCompetitions()
 clubs = loadClubs()
 
 
-# Max points for each competition is 12
-def loadPoints():
-    max_points_club = {}
-    for competition in competitions:
-        max_points_club[competition['name']] = 0
-    return max_points_club
-
-max_points_club = loadPoints()
-
-
 @app.route('/')
 def index(error=None):
     return render_template('index.html',error=error)
@@ -37,6 +27,9 @@ def index(error=None):
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
     multiple_club = [club for club in clubs if club['email'] == request.form['email']]
+    for club in clubs:
+        for competition in competitions:
+            club[competition['name']] = False
     try:
         alone_club = multiple_club[0]
     except IndexError:
@@ -51,10 +44,6 @@ def book(competition,club):
 
     if foundClub and foundCompetition:
         foundClub['points'] = int(foundClub['points'])
-        try:
-            foundCompetition['max']
-        except:
-            foundCompetition['max'] = 0
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
@@ -65,12 +54,9 @@ def book(competition,club):
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
+    club[competition['name']] = True
     placesRequired = int(request.form['places'])
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-
-    max_points_club[competition['name']] += placesRequired
-    competition['max'] += placesRequired
-    club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
