@@ -19,12 +19,17 @@
     <h3>Competitions:</h3>
     <ul>
         {% for comp in competitions%}
-        <li>
+        <li style="list-style-type: none;">
+            {% if comp['past'] == True %}
+            <h4 style="color:red;">Warning ! Competition is finished</h4>
+            {% else %}
+            <h4 style="color:green;">Hurry up ! You can participate to this competition !</h4>
+            {% endif %}
             {{comp['name']}}<br />
             Date: {{comp['date']}}</br>
             Number of Places: {{comp['numberOfPlaces']}}
             {%if comp['numberOfPlaces']|int >0%}
-            {% if club['points'] != 0 and club[comp['name']] == False%}
+            {% if club['points'] != 0 and club[comp['name']] == False and comp['past'] == False%}
             <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
             {%endif%}
             {%endif%}

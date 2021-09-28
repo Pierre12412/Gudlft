@@ -1,6 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-
+from datetime import datetime
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -34,6 +34,14 @@ def showSummary():
         alone_club = multiple_club[0]
     except IndexError:
         return index("Sorry, that email was not found.")
+    for competition in competitions:
+        date_compet = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
+        actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        actual = datetime.strptime(actual, '%Y-%m-%d %H:%M:%S')
+        if date_compet < actual:
+            competition['past'] = True
+        else:
+            competition['past'] = False
     return render_template('welcome.html',club=alone_club,competitions=competitions)
 
 
