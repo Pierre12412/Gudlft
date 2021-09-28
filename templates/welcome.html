@@ -39,5 +39,15 @@
     </ul>
     {%endwith%}
 
+    <h3>Clubs:</h3>
+    <table style="width:500px;">
+      {% for club in clubs %}
+          <tr>
+            <td style="border: 1px solid #333;">{{club['name']}}</td>
+            <td style="border: 1px solid #333;">{{club['points']}}</td>
+          </tr>
+      {% endfor %}
+    </table>
+
 </body>
 </html>

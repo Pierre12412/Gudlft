@@ -42,7 +42,7 @@ def showSummary():
             competition['past'] = True
         else:
             competition['past'] = False
-    return render_template('welcome.html',club=alone_club,competitions=competitions)
+    return render_template('welcome.html',club=alone_club,competitions=competitions,clubs = clubs)
 
 
 @app.route('/book/<competition>/<club>')
@@ -55,7 +55,7 @@ def book(competition,club):
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions,clubs = clubs)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
@@ -67,11 +67,14 @@ def purchasePlaces():
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
     club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template('welcome.html', club=club, competitions=competitions,clubs = clubs)
 
 
 
-# TODO: Add route for points display
+@app.route('/display')
+def show_clubs():
+    return render_template('display.html',clubs = clubs)
+
 
 
 @app.route('/logout')
