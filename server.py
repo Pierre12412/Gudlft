@@ -31,22 +31,20 @@ actual_club = None
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    multiple_club = [club for club in clubs if club['email'] == request.form['email']]
-    for club in clubs:
-        for competition in competitions:
-            club[competition['name']] = False
     try:
-        alone_club = multiple_club[0]
+        alone_club = [club for club in clubs if club["email"] == request.form["email"]][0]
     except IndexError:
         return index("Sorry, that email was not found.")
+    for club in clubs:
+        for competition in competitions:
+            club[competition["name"]] = False
+
     for competition in competitions:
-        date_compet = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
-        actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        actual = datetime.strptime(actual, '%Y-%m-%d %H:%M:%S')
-        if date_compet < actual:
-            competition['past'] = True
+        date_compet = datetime.strptime(competition["date"], "%Y-%m-%d %H:%M:%S")
+        if date_compet < datetime.now():
+            competition["past"] = True
         else:
-            competition['past'] = False
+            competition["past"] = False
     global actual_club
     actual_club = alone_club
     alone_club['points'] = int(alone_club['points'])
