@@ -11,9 +11,9 @@
         <input type="hidden" name="club" value="{{club['name']}}">
         <input type="hidden" name="competition" value="{{competition['name']}}">
         {% if 12 < club['points'] %}
-        <label for="places">How many places?</label><input type="number" name="places" id="" value="1" min="1" max="12" required/>
+        <label for="places">How many places?</label><input type="number" name="places" id="" value="3" min="3" max="12" required step="3"/>
         {% else %}
-        <label for="places">How many places?</label><input type="number" name="places" id="" value="1" min="1" max="{{club['points']}}" required/>
+        <label for="places">How many places?</label><input type="number" name="places" id="" value="3" min="3" max="{{club['points']}}" required step="3"/>
         {% endif %}
         <button type="submit">Book</button>
     </form>
