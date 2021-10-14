@@ -39,4 +39,3 @@ def test_logout():
     app.test_client().get('/showSummary')
     response = app.test_client().get('/logout')
     assert response.status_code == 302
-

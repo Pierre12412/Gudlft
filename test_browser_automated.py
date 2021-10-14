@@ -5,13 +5,10 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
-options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')
-
 
 @pytest.fixture(scope="class")
 def chrome_driver_init(request):
-    chrome_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    chrome_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     request.cls.driver = chrome_driver
 
 
@@ -25,6 +22,7 @@ class Test_URL_Chrome(Basic_Chrome_Test):
         assert "Welcome to the GUDLFT Registration Portal!" in self.driver.find_element(By.TAG_NAME, 'h1').text
 
     def test_connect_allowed(self):
+        # Login
         email = "admin@irontemple.com"
         email_text_field = self.driver.find_element(By.NAME,'email')
         button = self.driver.find_element(By.XPATH,'/html/body/form/button')
@@ -39,23 +37,34 @@ class Test_URL_Chrome(Basic_Chrome_Test):
         form.send_keys(Keys.CONTROL + "a")
         form.send_keys(Keys.DELETE)
         book_button = self.driver.find_element(By.XPATH, '/html/body/form/button')
+
+        # Try a too low number
         form.send_keys(2)
         book_button.click()
         assert self.driver.current_url == 'http://127.0.0.1:5000/book/Fall%20Classic/Iron%20Temple'
+
+        # Try a number which is not multiple of 3
         form.send_keys(Keys.CONTROL + "a")
         form.send_keys(Keys.DELETE)
         form.send_keys(4)
         book_button.click()
         assert self.driver.current_url == 'http://127.0.0.1:5000/book/Fall%20Classic/Iron%20Temple'
+
+        # Try a too large number
         form.send_keys(Keys.CONTROL + "a")
         form.send_keys(Keys.DELETE)
         form.send_keys(10)
         book_button.click()
         assert self.driver.current_url == 'http://127.0.0.1:5000/book/Fall%20Classic/Iron%20Temple'
+
+        # Try the good number
         form.send_keys(Keys.CONTROL + "a")
         form.send_keys(Keys.DELETE)
         form.send_keys(3)
         book_button.click()
         assert self.driver.current_url == 'http://127.0.0.1:5000/purchasePlaces'
         assert 'Great-booking complete!' in self.driver.find_element(By.XPATH,'/html/body/ul[1]/li').text
-        logout = self.driver.find_element(By.LINK_TEXT, 'Logout').click()
+        assert '1' in self.driver.find_element(By.XPATH,'/html/body/table/tbody/tr[2]/td[2]').text
+
+        # Logout
+        self.driver.find_element(By.LINK_TEXT, 'Logout').click()

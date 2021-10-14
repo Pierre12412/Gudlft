@@ -24,12 +24,9 @@ def index(error=None):
     return render_template('index.html', error=error)
 
 
-
 competitions = loadCompetitions()
 clubs = loadClubs()
 actual_club = None
-
-
 
 
 @app.route('/showSummary',methods=['POST'])
@@ -52,6 +49,7 @@ def showSummary():
             competition['past'] = False
     global actual_club
     actual_club = alone_club
+    alone_club['points'] = int(alone_club['points'])
     return render_template('welcome.html',club=alone_club,competitions=competitions,clubs = clubs)
 
 
@@ -88,7 +86,7 @@ def purchasePlaces():
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])- int((placesRequired/3))
     club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions,clubs = clubs)
+    return render_template('welcome.html', club=actual_club, competitions=competitions,clubs = clubs)
 
 
 
