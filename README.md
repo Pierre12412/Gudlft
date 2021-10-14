@@ -27,7 +27,9 @@ Activez le ensuite avec la commande : virtualenv\Scripts\activate.bat
 Puis récupérez les packages Python de requirements.txt avec la commande suivante : pip install -r requirements.txt
 
 Enfin allumez le serveur en entrant : 
+
 set FLASK_APP=server.py
+
 flask run 
 
 Vous pouvez maintenant vous rendre sur le site dans un navigateur avec l'adresse http://127.0.0.1:5000/
@@ -52,10 +54,13 @@ créez un environnement virtuel avec la commande: python -m venv virtualenv
 Activez le ensuite avec la commande : source ~/virtualenv/bin/activate
 
 Puis récupérez les packages Python de requirements.txt avec la commande suivante : 
+
 pip install -r requirements.txt
 
 Enfin allumez le serveur en effectuant la commande : 
+
 set FLASK_APP=server.py
+
 flask run 
 
 Vous pouvez maintenant vous rendre sur le site dans un navigateur avec l'adresse http://127.0.0.1:5000/
