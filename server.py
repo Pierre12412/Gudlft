@@ -1,5 +1,4 @@
 import json
-
 import flask
 from flask import Flask,render_template,request,redirect,flash,url_for
 from datetime import datetime
@@ -10,26 +9,20 @@ app.secret_key = 'something_special'
 
 
 def loadClubs():
-    try:
-        with open('clubs.json') as c:
-             listOfClubs = json.load(c)['clubs']
-             return listOfClubs
-    except:
-        return 'error'
+    with open('clubs.json') as c:
+        listOfClubs = json.load(c)['clubs']
+        return listOfClubs
 
 
 def loadCompetitions():
-    try:
-        with open('competitions.json') as comps:
-             listOfCompetitions = json.load(comps)['competitions']
-             return listOfCompetitions
-    except:
-        return 'error'
+    with open('competitions.json') as comps:
+        listOfCompetitions = json.load(comps)['competitions']
+        return listOfCompetitions
 
+@app.route('/')
+def index(error=None):
+    return render_template('index.html', error=error)
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return "Le fichier des clubs ou des tournois est manquant"
 
 
 competitions = loadCompetitions()
@@ -37,12 +30,6 @@ clubs = loadClubs()
 actual_club = None
 
 
-@app.route('/')
-def index(error=None):
-    if clubs == 'error' or competitions == 'error':
-        return flask.redirect('/404')
-    else:
-        return render_template('index.html', error=error)
 
 
 @app.route('/showSummary',methods=['POST'])
@@ -91,6 +78,13 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     club[competition['name']] = True
     placesRequired = int(request.form['places'])
+
+    if placesRequired > club['points']:
+        flash("Trop de points attribués")
+        return render_template('welcome.html', club=actual_club, competitions=competitions,clubs = clubs)
+    if placesRequired % 3 != 0:
+        flash("Il faut 3 points pour réserver une place")
+        return render_template('welcome.html', club=actual_club, competitions=competitions,clubs = clubs)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])- int((placesRequired/3))
     club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')

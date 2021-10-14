@@ -1,4 +1,3 @@
-import pytest
 from server import app
 
 
@@ -41,9 +40,3 @@ def test_logout():
     response = app.test_client().get('/logout')
     assert response.status_code == 302
 
-def test_book_places():
-    app.test_client().get('/')
-    app.test_client().post('/showSummary', data=dict(email="admin@irontemple.com", ))
-    app.test_client().get('/book/Fall%20Classic/Iron%20Temple')
-    response = app.test_client().post('/purchasePlaces', data=dict(places=4))
-    print(response.data)
